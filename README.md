@@ -35,6 +35,10 @@ goal-forge/
     └── inspect_codex_config.py              Read-only config readiness report
 ```
 
+## Credits
+
+Inspired by [@ynkzlk](https://x.com/ynkzlk)'s blog post [*Ask User Question Tool Workflow*](https://www.tectontide.com/en/blog/ask-user-question-tool-workflow/) — the "interview me in detail" framing for turning rough ideas into executable specs comes from that piece.
+
 ## License
 
 MIT. See `LICENSE`.
