@@ -37,7 +37,7 @@ goal-forge/
 
 ## Credits
 
-Inspired by [@ynkzlk](https://x.com/ynkzlk)'s blog post [*Ask User Question Tool Workflow*](https://www.tectontide.com/en/blog/ask-user-question-tool-workflow/) — the "interview me in detail" framing for turning rough ideas into executable specs comes from that piece.
+Inspired by [@ynkzlk](https://x.com/ynkzlk)'s blog post [*Codex /goal: A Six-Hour Run*](https://www.tectontide.com/en/blog/codex-goal-six-hour-run/) — the "interview me in detail" framing for turning rough ideas into executable specs comes from that piece.
 
 ## License
 
