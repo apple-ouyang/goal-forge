@@ -37,7 +37,7 @@ goal-forge/
 
 ## Credits
 
-Inspired by [@ynkzlk](https://x.com/ynkzlk)'s blog post [*Codex /goal: A Six-Hour Run*](https://www.tectontide.com/en/blog/codex-goal-six-hour-run/) — the "interview me in detail" framing for turning rough ideas into executable specs comes from that piece.
+Inspired by [@ynkzlk](https://x.com/ynkzlk)'s blog post [*Codex /goal: A Six-Hour Run*](https://www.tectontide.com/en/blog/codex-goal-six-hour-run/), which makes the case that long-running `/goal` runs succeed or fail on upfront specification discipline — explicit measurable `done_when` criteria, XML-structured prompts, and context architecture (reading lists, working rules, anti-pattern fences) that keep the agent from taking shortcuts. This skill operationalizes that discipline as a repeatable pipeline.
 
 ## License
 
