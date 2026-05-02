@@ -12,7 +12,7 @@ Default pipeline:
 1. Interview rough intent into `SPEC.md`.
 2. Tighten `SPEC.md` until scope and verification are concrete.
 3. Compile `SPEC.md` into `GOAL.md`.
-4. Check Codex config readiness without changing config.
+4. Check Codex config readiness before running `/goal`.
 
 Use this skill for coding and repo work first. If the task is mostly exploratory, research-only, security-critical, or lacks verifiable completion criteria, keep the user in the loop instead of compiling a `/goal`.
 
@@ -107,7 +107,20 @@ Use `scripts/inspect_codex_config.py` for a read-only report:
 python3 ~/.codex/skills/goal-forge/scripts/inspect_codex_config.py --project-path /path/to/project
 ```
 
-Run it from the target project root, or pass `--project-path`. The script reports the installed Codex version, selected config keys, and likely gaps for long-running `/goal` work. Do not edit `~/.codex/config.toml` unless the user explicitly asks for config changes.
+Run it from the target project root, or pass `--project-path`. The script reports the installed Codex version, selected config keys, trusted-project status, and gaps against the autonomous `/goal` configuration.
+
+Before telling the user a long-running `/goal` is ready, verify the config against `references/config_checklist.md`. The important autonomous settings are:
+
+- `model = "gpt-5.5"`
+- `model_context_window = 1050000`
+- `model_auto_compact_token_limit = 997500`
+- `model_reasoning_effort = "high"`
+- `plan_mode_reasoning_effort = "xhigh"`
+- `approval_policy = "never"`
+- `sandbox_mode = "danger-full-access"`
+- `[features] goals = true`
+
+Do not edit `~/.codex/config.toml` unless the user explicitly asks for config changes. If asked to change config, prefer applying the dangerous `approval_policy = "never"` and `sandbox_mode = "danger-full-access"` settings only for explicitly trusted project paths rather than globally.
 
 Read `references/config_checklist.md` when explaining config tradeoffs.
 

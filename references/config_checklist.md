@@ -11,28 +11,35 @@ Use this checklist when preparing long-running Codex `/goal` work.
 - The spec has user-approved measurable `done_when` criteria.
 - Verification commands are known and can run without interactive prompts.
 
-## Long-Running Run Settings
+## Autonomous /goal Settings
 
-Useful settings to inspect in `~/.codex/config.toml`:
+This is the target config for autonomous, multi-hour `/goal` sessions:
 
 ```toml
 model = "gpt-5.5"
+model_context_window = 1050000
+model_auto_compact_token_limit = 997500
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
-model_auto_compact_token_limit = 997500
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
 
 [features]
 goals = true
 ```
 
-Autonomous runs may also use:
+Why each setting matters:
 
-```toml
-approval_policy = "never"
-sandbox_mode = "danger-full-access"
-```
+- `model = "gpt-5.5"` selects the model used for the run.
+- `model_context_window = 1050000` gives the long context budget expected by extended goal runs.
+- `model_auto_compact_token_limit = 997500` allows `/goal` sessions to compact context before they hard-stop near the limit.
+- `model_reasoning_effort = "high"` is for execution tasks; `medium` is usually too shallow for multi-hour autonomous work.
+- `plan_mode_reasoning_effort = "xhigh"` is for the planning pass before execution.
+- `approval_policy = "never"` lets the run continue without pausing for approvals.
+- `sandbox_mode = "danger-full-access"` gives the run full filesystem access.
+- `[features] goals = true` enables goal workflows when the CLI build requires the feature flag.
 
-Only recommend those settings for trusted project directories. They allow hands-off execution and broad filesystem access, so they are inappropriate for untrusted code, sensitive credentials, payment/auth paths, or tasks that should pause for approval.
+Only recommend `approval_policy = "never"` and `sandbox_mode = "danger-full-access"` for directories explicitly marked trusted in config. These settings give the model unsupervised write access to the filesystem. Do not use them in a directory you would not let an unsupervised process touch. Prefer applying them only to specific trusted project paths when Codex supports scoped config.
 
 ## Safer Middle Ground
 

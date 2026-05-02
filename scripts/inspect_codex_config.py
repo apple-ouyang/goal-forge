@@ -20,6 +20,15 @@ CONFIG_PATH = Path.home() / ".codex" / "config.toml"
 # Codex CLI v0.128.0 introduced persisted /goal workflows.
 MIN_GOAL_VERSION = (0, 128, 0)
 MIN_GOAL_VERSION_LABEL = ".".join(str(part) for part in MIN_GOAL_VERSION)
+AUTONOMOUS_SETTINGS = {
+    "model": "gpt-5.5",
+    "model_context_window": 1050000,
+    "model_auto_compact_token_limit": 997500,
+    "model_reasoning_effort": "high",
+    "plan_mode_reasoning_effort": "xhigh",
+    "approval_policy": "never",
+    "sandbox_mode": "danger-full-access",
+}
 
 
 def codex_version() -> str | None:
@@ -96,7 +105,15 @@ def profile_overrides(config: dict) -> list[tuple[str, str, object]]:
     for profile_name, settings in sorted(profiles.items()):
         if not isinstance(settings, dict):
             continue
-        for key in ("approval_policy", "sandbox_mode"):
+        for key in (
+            "approval_policy",
+            "sandbox_mode",
+            "model",
+            "model_context_window",
+            "model_auto_compact_token_limit",
+            "model_reasoning_effort",
+            "plan_mode_reasoning_effort",
+        ):
             if key in settings:
                 overrides.append((str(profile_name), key, settings[key]))
     return overrides
@@ -105,6 +122,23 @@ def profile_overrides(config: dict) -> list[tuple[str, str, object]]:
 def print_key(config: dict, key: str) -> None:
     value = config.get(key, "<unset>")
     print(f"{key}: {value}")
+
+
+def config_value(config: dict, key: str) -> object:
+    return config.get(key, "<unset>")
+
+
+def autonomous_gaps(config: dict, features: dict, trust_level: str | None) -> list[str]:
+    gaps = []
+    for key, expected in AUTONOMOUS_SETTINGS.items():
+        actual = config_value(config, key)
+        if actual != expected:
+            gaps.append(f"{key}: expected {expected!r}, got {actual!r}")
+    if features.get("goals") is not True:
+        gaps.append(f"features.goals: expected True, got {features.get('goals', '<unset>')!r}")
+    if trust_level != "trusted":
+        gaps.append(f"current_project_trust: expected 'trusted', got {trust_level or '<unset>'!r}")
+    return gaps
 
 
 def main() -> int:
@@ -139,9 +173,11 @@ def main() -> int:
     print(f"config_path: {CONFIG_PATH}")
     print(f"config_exists: {CONFIG_PATH.exists()}")
     print(f"config_status: {config_error or 'ok'}")
+    trust_level = current_project_trust(config, project_path)
     print(f"project_path: {project_path.resolve()}")
-    print(f"current_project_trust: {current_project_trust(config, project_path) or '<unset>'}")
+    print(f"current_project_trust: {trust_level or '<unset>'}")
     print_key(config, "model")
+    print_key(config, "model_context_window")
     print_key(config, "model_reasoning_effort")
     print_key(config, "plan_mode_reasoning_effort")
     print_key(config, "model_auto_compact_token_limit")
@@ -157,10 +193,21 @@ def main() -> int:
         print("profile_overrides: <none>")
 
     print()
+    gaps = autonomous_gaps(config, features, trust_level)
+    if gaps:
+        print("autonomous_goal_status: not ready")
+        print("autonomous_goal_gaps:")
+        for gap in gaps:
+            print(f"- {gap}")
+    else:
+        print("autonomous_goal_status: ready")
+
+    print()
     print("notes:")
     print("- This script is read-only.")
-    print("- Use high execution reasoning and xhigh planning for difficult long-running goals.")
-    print("- Use approval_policy=never and sandbox_mode=danger-full-access only in trusted project directories.")
+    print("- Use model_reasoning_effort=high for execution and plan_mode_reasoning_effort=xhigh for planning.")
+    print("- model_auto_compact_token_limit=997500 lets long /goal sessions compact before the context limit.")
+    print("- Use approval_policy=never and sandbox_mode=danger-full-access only in explicitly trusted project directories.")
     print("- Do not start a long goal until SPEC.md has user-approved measurable done_when criteria.")
     return 0
 
