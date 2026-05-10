@@ -7,6 +7,8 @@ description: Turn a rough coding or repo idea into a spec, executable plan, and 
 
 Goal Forge converts a rough coding idea into an executable Codex `/goal` contract.
 
+This fork stays intentionally close to `michaelpersonal/goal-forge`; keep local changes minimal and review upstream before updating.
+
 Default pipeline:
 
 1. Interview rough intent into `SPEC.md`.
