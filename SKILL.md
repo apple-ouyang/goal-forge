@@ -11,10 +11,11 @@ This fork stays intentionally close to `michaelpersonal/goal-forge`; keep local 
 
 Default pipeline:
 
-1. Interview rough intent into `SPEC.md`.
-2. Tighten `SPEC.md` until scope and verification are concrete.
-3. Compile `SPEC.md` into `GOAL.md`.
-4. Check Codex config readiness before running `/goal`.
+1. Run `docs-list <repo-root>` and choose or create the active plan document under `docs/plans/`.
+2. Interview rough intent into that plan document.
+3. Tighten the plan until scope and verification are concrete.
+4. Compile the approved plan into the same document or a sibling goal document under `docs/plans/`.
+5. Check Codex config readiness before running `/goal`.
 
 Use this skill for coding and repo work first. If the task is mostly exploratory, research-only, security-critical, or lacks verifiable completion criteria, keep the user in the loop instead of compiling a `/goal`.
 
@@ -22,21 +23,42 @@ Use this skill for coding and repo work first. If the task is mostly exploratory
 
 Choose the smallest mode that satisfies the request.
 
-- **Interview**: User gives a rough idea, asks to create a spec, or the spec lacks user-approved success criteria.
-- **Tighten**: User has a `SPEC.md` and wants it challenged, clarified, or made executable.
-- **Compile**: User has a good enough `SPEC.md` and wants a `/goal` prompt or `GOAL.md`.
+- **Interview**: User gives a rough idea, asks to create a spec, or the plan lacks user-approved success criteria.
+- **Tighten**: User has a plan document and wants it challenged, clarified, or made executable.
+- **Compile**: User has a good enough plan document and wants a `/goal` prompt or goal document.
 - **Check config**: User asks whether their Codex setup can run long goals.
+
+## Document System
+
+Always use the repository docs system for durable Goal Forge artifacts.
+
+1. Run `docs-list <repo-root>` before reading, creating, or updating plan content.
+2. Reuse an existing active plan when it fits the task. If no active plan fits, create a new file under `docs/plans/`.
+3. Do not create root-level `SPEC.md` or `GOAL.md`.
+4. Use `doc_kind: plan` and `status: active` in front matter.
+
+Plan documents must include at least this front matter:
+
+```yaml
+---
+summary: <one sentence>
+doc_kind: plan
+status: active
+read_when:
+  - <when to read this plan>
+---
+```
 
 ## Interview Mode
 
 When the user gives a rough idea or asks to create a spec:
 
-1. Read the existing `SPEC.md` if present. Otherwise treat the rough idea as the interview seed; do not draft `SPEC.md` until step 6.
+1. Run `docs-list <repo-root>`, then read the chosen active plan document if present. Otherwise treat the rough idea as the interview seed; do not draft the plan until step 6.
 2. Interview the user in detail before finalizing the spec.
 3. Ask about anything relevant: technical implementation, UI/UX, architecture, data model, edge cases, tradeoffs, rollout, verification, risks, and non-goals.
 4. Do not ask obvious checklist questions. Ask questions that force decisions or expose hidden ambiguity.
 5. Continue interviewing until the spec is complete enough to compile into an executable `/goal`.
-6. Then write or update `SPEC.md`.
+6. Then write or update the selected `docs/plans/` plan document.
 
 Use structured user-question tooling when available. If it is not available, ask concise batches of questions in chat. Keep each batch focused on unresolved blockers.
 
@@ -44,7 +66,7 @@ Hard gate: do not compile a `/goal` prompt until `done_when` contains concrete, 
 
 ## Tighten Mode
 
-Read `SPEC.md` skeptically before any execution prompt is created.
+Read the selected `docs/plans/` plan document skeptically before any execution prompt is created.
 
 For each ambiguity:
 
@@ -69,16 +91,16 @@ The tightened spec should include:
 
 ## Compile Mode
 
-Compile `SPEC.md` into `GOAL.md` using the block structure in `references/goal_prompt_blocks.md`. Load `references/standard_execution_rules.md` for default `<execution_rules>` content.
+Compile the selected `docs/plans/` plan document into a `/goal` prompt or a sibling goal document under `docs/plans/` using the block structure in `references/goal_prompt_blocks.md`. Load `references/standard_execution_rules.md` for default `<execution_rules>` content.
 
-Before writing `GOAL.md`, reject weak specs that lack:
+Before writing a goal document, reject weak plans that lack:
 
 - measurable `done_when`
 - scope boundaries or non-goals
 - concrete verification commands or checks
 - enough context for an agent to start reading the repo
 
-If the spec is weak, route the user back to Interview or Tighten mode with a specific list of missing decisions. Do not write `GOAL.md` until the gaps are resolved.
+If the plan is weak, route the user back to Interview or Tighten mode with a specific list of missing decisions. Do not write the goal document until the gaps are resolved.
 
 Concrete gate: each `done_when` item must name a command, file artifact, or user-observable behavior. Otherwise mark it as weak and ask for clarification.
 
@@ -93,7 +115,7 @@ Map the spec into the goal blocks:
 - `references/standard_execution_rules.md` plus repo-specific rules -> `<execution_rules>`
 - final artifacts and completion signal -> `<output_contract>`
 
-After writing `GOAL.md`, self-check it:
+After writing the goal document, self-check it:
 
 - `done_when` is measurable and user-approved
 - context names files or discovery commands
@@ -130,8 +152,8 @@ Read `references/config_checklist.md` when explaining config tradeoffs.
 
 Depending on the request, produce one or more of:
 
-- updated `SPEC.md`
-- generated `GOAL.md`
+- updated `docs/plans/` plan document
+- generated goal document under `docs/plans/`
 - config readiness report
 - the exact `/goal` prompt body to paste into Codex
 
