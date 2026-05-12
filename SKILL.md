@@ -32,7 +32,7 @@ Choose the smallest mode that satisfies the request.
 
 Always use the repository docs system for durable Goal Forge artifacts.
 
-1. Run `docs-list <repo-root>` before reading, creating, or updating plan content.
+1. Run `docs-list <repo-root>` before reading, creating, or updating goal content.
 2. Reuse an existing active goal when it fits the task. If no active goal fits, create a new file under `docs/goals/`.
 3. Do not create root-level `SPEC.md` or `GOAL.md`.
 4. Use `doc_kind: goal`, `status: active`, and `goal_state` in front matter.
@@ -94,7 +94,7 @@ The tightened spec should include:
 
 Compile the selected `docs/goals/` goal document into a `/goal` prompt or finalize the same document under `docs/goals/` using the block structure in `references/goal_prompt_blocks.md`. Load `references/standard_execution_rules.md` for default `<execution_rules>` content.
 
-Before writing a goal document, reject weak plans that lack:
+Before writing a goal document, reject weak goals that lack:
 
 - measurable `done_when`
 - scope boundaries or non-goals
