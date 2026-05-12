@@ -11,10 +11,10 @@ This fork stays intentionally close to `michaelpersonal/goal-forge`; keep local 
 
 Default pipeline:
 
-1. Run `docs-list <repo-root>` and choose or create the active plan document under `docs/plans/`.
-2. Interview rough intent into that plan document.
-3. Tighten the plan until scope and verification are concrete.
-4. Compile the approved plan into the same document or a sibling goal document under `docs/plans/`.
+1. Run `docs-list <repo-root>` and choose or create the active goal document under `docs/goals/`.
+2. Interview rough intent into that goal document.
+3. Tighten the goal until scope and verification are concrete.
+4. Compile the approved goal into the same document under `docs/goals/`.
 5. Check Codex config readiness before running `/goal`.
 
 Use this skill for coding and repo work first. If the task is mostly exploratory, research-only, security-critical, or lacks verifiable completion criteria, keep the user in the loop instead of compiling a `/goal`.
@@ -24,8 +24,8 @@ Use this skill for coding and repo work first. If the task is mostly exploratory
 Choose the smallest mode that satisfies the request.
 
 - **Interview**: User gives a rough idea, asks to create a spec, or the plan lacks user-approved success criteria.
-- **Tighten**: User has a plan document and wants it challenged, clarified, or made executable.
-- **Compile**: User has a good enough plan document and wants a `/goal` prompt or goal document.
+- **Tighten**: User has a goal document and wants it challenged, clarified, or made executable.
+- **Compile**: User has a good enough goal document and wants a `/goal` prompt or finalized goal document.
 - **Check config**: User asks whether their Codex setup can run long goals.
 
 ## Document System
@@ -33,19 +33,20 @@ Choose the smallest mode that satisfies the request.
 Always use the repository docs system for durable Goal Forge artifacts.
 
 1. Run `docs-list <repo-root>` before reading, creating, or updating plan content.
-2. Reuse an existing active plan when it fits the task. If no active plan fits, create a new file under `docs/plans/`.
+2. Reuse an existing active goal when it fits the task. If no active goal fits, create a new file under `docs/goals/`.
 3. Do not create root-level `SPEC.md` or `GOAL.md`.
-4. Use `doc_kind: plan` and `status: active` in front matter.
+4. Use `doc_kind: goal`, `status: active`, and `goal_state` in front matter.
 
-Plan documents must include at least this front matter:
+Goal documents must include at least this front matter:
 
 ```yaml
 ---
 summary: <one sentence>
-doc_kind: plan
+doc_kind: goal
 status: active
+goal_state: draft
 read_when:
-  - <when to read this plan>
+  - <when to read this goal>
 ---
 ```
 
@@ -53,20 +54,20 @@ read_when:
 
 When the user gives a rough idea or asks to create a spec:
 
-1. Run `docs-list <repo-root>`, then read the chosen active plan document if present. Otherwise treat the rough idea as the interview seed; do not draft the plan until step 6.
+1. Run `docs-list <repo-root>`, then read the chosen active goal document if present. Otherwise treat the rough idea as the interview seed; do not draft the goal until step 6.
 2. Interview the user in detail before finalizing the spec.
 3. Ask about anything relevant: technical implementation, UI/UX, architecture, data model, edge cases, tradeoffs, rollout, verification, risks, and non-goals.
 4. Do not ask obvious checklist questions. Ask questions that force decisions or expose hidden ambiguity.
 5. Continue interviewing until the spec is complete enough to compile into an executable `/goal`.
-6. Then write or update the selected `docs/plans/` plan document.
+6. Then write or update the selected `docs/goals/` goal document.
 
 Use structured user-question tooling when available. If it is not available, ask concise batches of questions in chat. Keep each batch focused on unresolved blockers.
 
-Hard gate: do not compile a `/goal` prompt until `done_when` contains concrete, user-approved success criteria. After the interview has covered scope, architecture, and verification, Codex may propose candidate `done_when` criteria as a starting point. The user must confirm or edit product and acceptance criteria before the spec is considered complete.
+Hard gate: do not compile a `/goal` prompt until `done_when` contains concrete, user-approved success criteria. After the interview has covered scope, architecture, and verification, Codex may propose candidate `done_when` criteria as a starting point. The user must confirm or edit product and acceptance criteria before the spec is considered complete. Before compile, set `goal_state: ready`.
 
 ## Tighten Mode
 
-Read the selected `docs/plans/` plan document skeptically before any execution prompt is created.
+Read the selected `docs/goals/` goal document skeptically before any execution prompt is created.
 
 For each ambiguity:
 
@@ -91,7 +92,7 @@ The tightened spec should include:
 
 ## Compile Mode
 
-Compile the selected `docs/plans/` plan document into a `/goal` prompt or a sibling goal document under `docs/plans/` using the block structure in `references/goal_prompt_blocks.md`. Load `references/standard_execution_rules.md` for default `<execution_rules>` content.
+Compile the selected `docs/goals/` goal document into a `/goal` prompt or finalize the same document under `docs/goals/` using the block structure in `references/goal_prompt_blocks.md`. Load `references/standard_execution_rules.md` for default `<execution_rules>` content.
 
 Before writing a goal document, reject weak plans that lack:
 
@@ -100,7 +101,7 @@ Before writing a goal document, reject weak plans that lack:
 - concrete verification commands or checks
 - enough context for an agent to start reading the repo
 
-If the plan is weak, route the user back to Interview or Tighten mode with a specific list of missing decisions. Do not write the goal document until the gaps are resolved.
+If the goal is weak, route the user back to Interview or Tighten mode with a specific list of missing decisions. Do not write the goal document until the gaps are resolved.
 
 Concrete gate: each `done_when` item must name a command, file artifact, or user-observable behavior. Otherwise mark it as weak and ask for clarification.
 
@@ -122,6 +123,7 @@ After writing the goal document, self-check it:
 - constraints prevent obvious shortcuts
 - verification is executable or explicitly manual
 - the task is execution-oriented enough for `/goal`
+- `goal_state` is `ready`
 
 ## Config Check
 
@@ -152,8 +154,8 @@ Read `references/config_checklist.md` when explaining config tradeoffs.
 
 Depending on the request, produce one or more of:
 
-- updated `docs/plans/` plan document
-- generated goal document under `docs/plans/`
+- updated `docs/goals/` goal document
+- generated goal document under `docs/goals/`
 - config readiness report
 - the exact `/goal` prompt body to paste into Codex
 
